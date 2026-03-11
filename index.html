@@ -530,34 +530,21 @@
   <section>
     <div class="section-title">Setup</div>
     <div class="section-heading">How to Install</div>
-    <p style="color: var(--muted-foreground); margin-bottom: 24px;">Pick one of these two methods, then start building.</p>
+    <p style="color: var(--muted-foreground); margin-bottom: 24px;">Clone the repo and copy the skill folder into your Claude Code skills directory.</p>
 
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; margin-bottom: 24px;">
-      <!-- Option A -->
-      <div class="card" style="position: relative;">
-        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
-          <span style="display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 6px; background: var(--primary); color: var(--primary-foreground); font-size: 12px; font-weight: 600;">A</span>
-          <h4 style="font-size: 15px; font-weight: 600;">Install via npm <span style="font-size: 12px; font-weight: 500; color: var(--primary); background: color-mix(in srgb, var(--primary) 12%, transparent); padding: 2px 8px; border-radius: 4px; margin-left: 4px;">recommended</span></h4>
-        </div>
-        <p style="font-size: 14px; color: var(--muted-foreground); margin-bottom: 12px;">One command to install the skill globally:</p>
-        <div class="code-block" style="margin-bottom: 10px;"><span class="code-keyword">npx</span> claude-code skill install marinade-product-design</div>
-        <p style="font-size: 13px; color: var(--muted-foreground);">Or from the Git repo directly:</p>
-        <div class="code-block" style="margin-top: 6px;"><span class="code-keyword">npx</span> claude-code skill install github:spoony-vu/marinade-product-design-skill</div>
+    <div class="card" style="margin-bottom: 24px;">
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+        <div style="width: 24px; height: 24px; color: var(--foreground);"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="24" height="24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"/></svg></div>
+        <h4 style="font-size: 15px; font-weight: 600;">Install the skill</h4>
       </div>
-
-      <!-- Option B -->
-      <div class="card" style="position: relative;">
-        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
-          <span style="display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 6px; background: var(--secondary); color: var(--secondary-foreground); font-size: 12px; font-weight: 600;">B</span>
-          <h4 style="font-size: 15px; font-weight: 600;">Clone manually</h4>
-        </div>
-        <p style="font-size: 14px; color: var(--muted-foreground); margin-bottom: 12px;">Clone the repo and copy the skill folder:</p>
-        <div class="code-block" style="margin-bottom: 10px;"><span class="code-keyword">git</span> clone https://github.com/spoony-vu/marinade-product-design-skill.git
+      <div class="code-block" style="margin-bottom: 12px;"><span class="code-keyword">git</span> clone https://github.com/spoony-vu/marinade-product-design-skill.git
 <span class="code-keyword">cp</span> -r marinade-product-design-skill/skill ~/.claude/skills/marinade-product-design</div>
-        <p style="font-size: 13px; color: var(--muted-foreground); margin-top: 10px;">The skill folder contains:</p>
-        <div class="code-block" style="margin-top: 6px;">SKILL.md      <span class="code-comment"># Design system rules + token reference</span>
+      <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 8px;">The skill folder contains:</p>
+      <div class="code-block">SKILL.md      <span class="code-comment"># Design system rules + token reference</span>
 tokens.json   <span class="code-comment"># Clean token file (light + dark)</span></div>
-      </div>
+      <p style="font-size: 13px; color: var(--muted-foreground); margin-top: 12px;">To get updates later, pull and re-copy:</p>
+      <div class="code-block" style="margin-top: 6px;"><span class="code-keyword">cd</span> marinade-product-design-skill && <span class="code-keyword">git</span> pull
+<span class="code-keyword">cp</span> -r skill/* ~/.claude/skills/marinade-product-design/</div>
     </div>
 
     <!-- Then: Start building -->
