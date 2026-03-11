@@ -192,13 +192,150 @@ colors: {
 - Never use Tailwind `dark:` modifier for colors — all color switching happens through CSS variables
 - Test both modes before shipping
 
-### Animation
-- Micro-interactions: 100-150ms
-- Tooltips, dropdowns: 150-250ms
-- Modals, drawers: 200-300ms
-- Use `ease-out` for appearing elements, `ease-in-out` for movement
-- Only animate `transform` and `opacity` — never layout properties
-- Include `prefers-reduced-motion: reduce` fallbacks
+### Animation & Motion (from /emil-design-engineering)
+
+#### Decision: Should I Animate This?
+```
+Will users see this 100+ times daily?
+├── Yes → Don't animate (e.g. sidebar toggle, frequent actions)
+└── No
+    ├── Is this user-initiated? → Animate with ease-out (150-250ms)
+    └── Is this a page transition? → Animate (300-400ms max)
+```
+
+#### Decision: What Easing?
+```
+Is the element entering or exiting?
+├── Yes → ease-out
+└── No
+    ├── Is it moving on screen? → ease-in-out
+    └── Is it a hover/color change? → ease
+```
+
+#### Easing Tokens (use these, not generic `ease-out`)
+```css
+--ease-out-quint: cubic-bezier(0.23, 1, 0.32, 1);     /* Strong ease-out for modals, drawers */
+--ease-out-cubic: cubic-bezier(0.215, 0.61, 0.355, 1); /* Standard ease-out for tooltips, dropdowns */
+--ease-in-out-quart: cubic-bezier(0.77, 0, 0.175, 1);  /* Movement on screen */
+```
+
+#### Duration
+| Element Type | Duration |
+|---|---|
+| Micro-interactions (button press, toggle) | 100-150ms |
+| Tooltips, dropdowns, popovers | 150-250ms |
+| Modals, drawers, sheets | 200-300ms |
+| Page transitions | 300-400ms max |
+
+#### Rules
+- Only animate `transform` and `opacity` — never `height`, `width`, `padding`, `margin` (triggers layout)
+- **Paired elements rule**: Elements that animate together (modal + overlay, tooltip + arrow) must share the same easing and duration
+- Exit animations can be faster than entrances
+- Avoid `blur` filters above 20px (expensive, especially Safari)
+- `will-change: transform` for janky animations — remove when not animating
+- Never use `transition: all` — specify explicit properties
+- Avoid `ease-in` and `linear` for UI elements (feels sluggish/robotic)
+
+#### Reduced Motion — MANDATORY
+Every animation needs a `prefers-reduced-motion` fallback:
+```css
+@media (prefers-reduced-motion: reduce) {
+  .animated { animation: none; transition: none; }
+}
+```
+
+#### Theme Transitions
+Switching dark/light mode must NOT trigger transitions on elements. Disable transitions during theme changes.
+
+### Interactivity Patterns (from /emil-design-engineering)
+
+#### Touch-First, Hover-Enhanced
+- Design for touch first, add hover as progressive enhancement
+- **Never rely on hover for core functionality** — hover enhances, not enables
+- Disable hover effects on touch devices:
+```css
+@media (hover: hover) and (pointer: fine) {
+  .element:hover { background: var(--accent); }
+}
+```
+- Set `touch-action: manipulation` on buttons/links to prevent double-tap zoom
+
+#### Tap Targets
+- **44px minimum** on all interactive elements
+- Small icon buttons: use `::before` pseudo-element to expand hit area:
+```css
+.icon-button { position: relative; width: 24px; height: 24px; }
+.icon-button::before { content: ''; position: absolute; inset: -10px; }
+```
+
+#### Button Press Feel
+Add `transform: scale(0.97)` on `:active` for tactile feedback:
+```css
+.button:active { transform: scale(0.97); }
+```
+
+#### No Layout Shift
+- Use `font-variant-numeric: tabular-nums` for all changing numbers
+- Never change font weight on hover/selected states
+- Use hardcoded dimensions for skeleton loaders and image placeholders
+
+#### Tooltips
+- **Delay before showing**: 200ms to prevent accidental activation
+- **Sequential ("warm") tooltips**: Once one tooltip is open, subsequent tooltips open instantly with no delay/animation. Track warm state and clear after 300ms of no tooltip being open.
+- Tooltip content must not rely on hover for functionality — it's supplementary only
+
+#### Focus & Keyboard
+- Tab order must be consistent — only tab through visible elements
+- `scrollIntoView({ behavior: 'smooth', block: 'nearest' })` when keyboard navigation scrolls
+- Focus moves to modal content on open, returns to trigger on close
+- Icon buttons always need `aria-label`
+- Focus outlines: grey, black, or white only — never colored outlines
+
+#### Forms & Inputs
+- Wrap inputs with `<form>` for Enter-to-submit
+- Support `Cmd+Enter` / `Ctrl+Enter` for textarea submission
+- Input font size: **16px minimum** (prevents iOS auto-zoom)
+- Label clicks must focus the associated input
+- Disable button after submission to prevent duplicate requests
+- Colocate errors near the field that caused them
+
+### Visual Polish (from /frontend-design + /emil-design-engineering)
+
+#### Anti-Slop Checklist
+Every Marinade UI must avoid generic AI aesthetics. Before shipping, verify:
+- No default/generic font choices (the system uses Geist — enforce it)
+- No arbitrary colors outside the token system
+- No cookie-cutter card layouts with identical padding everywhere
+- Every visual choice (color, spacing, radius, shadow) must be intentional for the context
+
+#### Shadows for Borders
+Use `box-shadow` instead of `border` for subtle dividers — blends better with varying backgrounds:
+```css
+box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
+```
+
+#### Hairline Borders
+```css
+:root { --border-hairline: 1px; }
+@media (min-resolution: 192dpi) { :root { --border-hairline: 0.5px; } }
+```
+
+#### Decorative Elements
+- `pointer-events: none` on all decorative/background elements
+- `user-select: none` on code illustrations and decorative art
+
+#### Mask Over Gradient
+Prefer `mask-image` over gradients for fades — works better with varying content:
+```css
+.fade-bottom { mask-image: linear-gradient(to bottom, black 80%, transparent); }
+```
+Do NOT apply fades on scrollable lists — it restricts viewable area.
+
+#### Z-Index Scale
+```css
+:root { --z-dropdown: 100; --z-modal: 200; --z-tooltip: 300; --z-toast: 400; }
+```
+Prefer `isolation: isolate` over z-index when possible.
 
 ### Data Display Patterns
 - Use Geist Mono for all numerical data (balances, APY, TVL, addresses)
@@ -286,7 +423,7 @@ All chart interactive elements (tooltip, crosshair, active dot) must be **hidden
 
 ## UI Quality Audit (Auto-Fix Mode)
 
-When building or reviewing any Marinade UI, automatically check for and fix these issues without being asked. This integrates the **frontend-design** skill's quality standards into Marinade's design system.
+When building or reviewing any Marinade UI, automatically check for and fix these issues without being asked. Integrates quality standards from **/frontend-design** (anti-slop aesthetics, bold design) and **/emil-design-engineering** (interactivity, polish, accessibility).
 
 ### Color & Theme Issues — Auto-Fix
 - Hardcoded hex/rgb values → Replace with CSS variable tokens
@@ -317,12 +454,27 @@ When building or reviewing any Marinade UI, automatically check for and fix thes
 - Animating `width`, `height`, `padding`, `margin` → Refactor to `transform`/`opacity`
 - `ease-in` on UI elements → Switch to `ease-out` (entering) or `ease-in-out` (moving)
 
+### Interactivity Issues — Auto-Fix (from /emil-design-engineering)
+- Hover effects without `@media (hover: hover)` guard → Add media query
+- Buttons without `:active` scale feedback → Add `transform: scale(0.97)`
+- Tooltips without delay → Add 200ms delay, implement warm state for sequential
+- `transition: all` → Specify exact properties
+- Font weight change on hover/selected → Remove (use color change instead)
+- Paired elements with different easing/duration → Synchronize
+- Animations on frequently-used actions → Remove or drastically reduce
+- Missing `touch-action: manipulation` on buttons → Add it
+- Inputs < 16px font size → Increase to prevent iOS zoom
+- Forms without Enter-to-submit → Wrap in `<form>`
+
 ### Accessibility Issues — Auto-Fix
-- Touch targets < 44px → Increase with padding
+- Touch targets < 44px → Increase with padding or `::before` pseudo-element
 - Icon buttons without `aria-label` → Add descriptive label
 - Missing focus-visible styles → Add using `ring` token
 - Color-only status indicators → Add icon or text supplement
-- Missing hover states on interactive elements → Add subtle background shift
+- Missing hover states on interactive elements → Add subtle background shift with `@media (hover: hover)` guard
+- Keyboard navigation doesn't scroll → Add `scrollIntoView` on focus
+- Focus doesn't move to modal on open → Add focus management
+- Colored focus outlines → Change to grey/black/white
 
 ### Chart Issues — Auto-Fix
 - Charts without tooltips → Add custom styled tooltip
