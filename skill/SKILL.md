@@ -16,9 +16,77 @@ You are helping build an internal tool/dashboard for Marinade Finance.
 
 ### Color Tokens — THE SOURCE OF TRUTH
 
-The canonical token file is `tokens.json` bundled with this skill. When scaffolding a project, copy it into the project root and generate CSS variables + Tailwind config from it.
+The full token definitions are embedded below as JSON. When scaffolding a project, generate CSS variables + Tailwind config from these tokens.
 
 **Every color in the system has a light and dark variant.** Dark mode is the default. Light mode must also work. Use CSS custom properties that switch based on a `.dark` / `.light` class on `<html>` or via `prefers-color-scheme`.
+
+#### tokens.json (embedded)
+
+```json
+{
+  "colors": {
+    "background":           { "light": "#FFFFFF", "dark": "#030707" },
+    "background-page":      { "light": "#F3F7F7", "dark": "#050D0C" },
+    "foreground":           { "light": "#182120", "dark": "#F6F9F9" },
+    "card":                 { "light": "#FFFFFF", "dark": "#050D0C" },
+    "card-foreground":      { "light": "#081211", "dark": "#F6F9F9" },
+    "popover":              { "light": "#FFFFFF", "dark": "#182120" },
+    "popover-foreground":   { "light": "#042F2E", "dark": "#F6F9F9" },
+    "primary":              { "light": "#0C9790", "dark": "#179F99" },
+    "primary-20":           { "light": "#0C979026", "dark": "#179F9933" },
+    "primary-90":           { "light": "#0C9790E6", "dark": "#179F99E6" },
+    "primary-foreground":   { "light": "#F6F9F9", "dark": "#042F2E" },
+    "secondary":            { "light": "#E7EEEF", "dark": "#212C2B" },
+    "secondary-foreground": { "light": "#3A4E4D", "dark": "#F6F9F9" },
+    "tertiary":             { "light": "#DDE7E8", "dark": "#3A4E4D" },
+    "tertiary-foreground":  { "light": "#6F8383", "dark": "#9AB1B2" },
+    "muted":                { "light": "#F3F7F7", "dark": "#111a19" },
+    "muted-foreground":     { "light": "#6C8383", "dark": "#6C8383" },
+    "accent":               { "light": "#E7EEEF", "dark": "#212C2B" },
+    "accent-foreground":    { "light": "#081211", "dark": "#F0FDFA" },
+    "destructive":          { "light": "#DC2626", "dark": "#F87171" },
+    "destructive-20":       { "light": "#DC262633", "dark": "#F871714D" },
+    "info":                 { "light": "#6366F1", "dark": "#818CF8" },
+    "info-20":              { "light": "#6366F133", "dark": "#818CF84D" },
+    "warning":              { "light": "#E59606", "dark": "#FB923C" },
+    "warning-20":           { "light": "#E5960633", "dark": "#FB923C33" },
+    "warning-10":           { "light": "#E596061A", "dark": "#FB923C33" },
+    "border":               { "light": "#DDE7E8", "dark": "#FFFFFF26" },
+    "border-grid":          { "light": "#E7EEEF", "dark": "#FFFFFF0F" },
+    "input":                { "light": "#E7EEEF", "dark": "#FFFFFF26" },
+    "ring":                 { "light": "#9AB1B24D", "dark": "#6F838380" },
+    "sidebar-background":          { "light": "#FFFFFF", "dark": "#081211" },
+    "sidebar-foreground":          { "light": "#042F2E", "dark": "#F6F9F9" },
+    "sidebar-primary":             { "light": "#182120", "dark": "#1D4ED8" },
+    "sidebar-primary-foreground":  { "light": "#F6F9F9", "dark": "#F6F9F9" },
+    "sidebar-accent":              { "light": "#F3F7F7", "dark": "#212C2B" },
+    "sidebar-accent-foreground":   { "light": "#182120", "dark": "#F6F9F9" },
+    "sidebar-border":              { "light": "#F3F7F7", "dark": "#FFFFFF1A" },
+    "sidebar-ring":                { "light": "#9AB1B2", "dark": "#6F8383" },
+    "chart-1":  { "light": "#0C9790", "dark": "#3AC3BC" },
+    "chart-2":  { "light": "#818CF8", "dark": "#6366F1" },
+    "chart-3":  { "light": "#FBBF24", "dark": "#F59E0B" },
+    "chart-4":  { "light": "#C084FC", "dark": "#A855F7" },
+    "chart-5":  { "light": "#FB7185", "dark": "#F43F5E" },
+    "tag-1":    { "light": "#CA8A04", "dark": "#FACC15" },
+    "tag-1-20": { "light": "#EAB30826", "dark": "#FACC1526" },
+    "tag-2":    { "light": "#EA580C", "dark": "#FB923C" },
+    "tag-2-20": { "light": "#EA580C26", "dark": "#FB923C26" },
+    "tag-3":    { "light": "#64748B", "dark": "#CBD5E1" },
+    "tag-3-20": { "light": "#64748B26", "dark": "#CBD5E126" },
+    "tag-4":    { "light": "#3B82F6", "dark": "#60A5FA" },
+    "tag-4-20": { "light": "#3B82F626", "dark": "#60A5FA26" }
+  },
+  "fonts": {
+    "sans":  "Geist",
+    "serif": "PT Serif",
+    "mono":  "Geist Mono"
+  },
+  "breakpoints": { "sm": 640, "md": 768, "lg": 1024, "xl": 1280, "2xl": 1536 },
+  "containers": { "3xs": 256, "2xs": 288, "xs": 320, "sm": 384, "md": 448, "lg": 512, "xl": 576, "2xl": 672, "3xl": 768, "4xl": 896, "5xl": 1024 },
+  "shadow": { "offset-x": 0, "offset-y": 2, "blur-radius": 10, "spread-radius": 0, "color": "#0000000D" }
+}
+```
 
 #### Semantic Color Tokens
 
