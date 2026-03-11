@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marinade Product Design — Claude Code Skill</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --background: #FFFFFF;
+      --background-page: #F3F7F7;
+      --foreground: #182120;
+      --card: #FFFFFF;
+      --card-foreground: #081211;
+      --popover: #FFFFFF;
+      --popover-foreground: #042F2E;
+      --primary: #0C9790;
+      --primary-foreground: #F6F9F9;
+      --secondary: #E7EEEF;
+      --secondary-foreground: #3A4E4D;
+      --tertiary: #DDE7E8;
+      --tertiary-foreground: #6F8383;
+      --muted: #F3F7F7;
+      --muted-foreground: #6C8383;
+      --accent: #E7EEEF;
+      --accent-foreground: #081211;
+      --destructive: #DC2626;
+      --info: #6366F1;
+      --warning: #E59606;
+      --border: #DDE7E8;
+      --border-grid: #E7EEEF;
+      --input: #E7EEEF;
+      --ring: rgba(154,177,178,0.3);
+      --chart-1: #0C9790;
+      --chart-2: #818CF8;
+      --chart-3: #FBBF24;
+      --chart-4: #C084FC;
+      --chart-5: #FB7185;
+      --tag-1: #CA8A04;
+      --tag-2: #EA580C;
+      --tag-3: #64748B;
+      --tag-4: #3B82F6;
+    }
+
+    .dark {
+      --background: #030707;
+      --background-page: #050D0C;
+      --foreground: #F6F9F9;
+      --card: #050D0C;
+      --card-foreground: #F6F9F9;
+      --popover: #182120;
+      --popover-foreground: #F6F9F9;
+      --primary: #179F99;
+      --primary-foreground: #042F2E;
+      --secondary: #212C2B;
+      --secondary-foreground: #F6F9F9;
+      --tertiary: #3A4E4D;
+      --tertiary-foreground: #9AB1B2;
+      --muted: #182120;
+      --muted-foreground: #6C8383;
+      --accent: #212C2B;
+      --accent-foreground: #F0FDFA;
+      --destructive: #F87171;
+      --info: #818CF8;
+      --warning: #FB923C;
+      --border: rgba(255,255,255,0.15);
+      --border-grid: rgba(255,255,255,0.06);
+      --input: rgba(255,255,255,0.15);
+      --ring: rgba(111,131,131,0.5);
+      --chart-1: #3AC3BC;
+      --chart-2: #6366F1;
+      --chart-3: #F59E0B;
+      --chart-4: #A855F7;
+      --chart-5: #F43F5E;
+      --tag-1: #FACC15;
+      --tag-2: #FB923C;
+      --tag-3: #CBD5E1;
+      --tag-4: #60A5FA;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Geist', -apple-system, sans-serif;
+      background: var(--background-page);
+      color: var(--foreground);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      line-height: 1.6;
+    }
+
+    .mono { font-family: 'Geist Mono', monospace; font-variant-numeric: tabular-nums; }
+
+    .container { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+    /* Hero */
+    .hero {
+      padding: 80px 0 60px;
+      text-align: center;
+      position: relative;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 600px; height: 600px;
+      background: radial-gradient(ellipse, var(--primary), transparent 70%);
+      opacity: 0.06;
+      pointer-events: none;
+    }
+    .hero h1 {
+      font-size: 48px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      text-wrap: balance;
+      margin-bottom: 16px;
+      position: relative;
+    }
+    .hero h1 span { color: var(--primary); }
+    .hero p {
+      font-size: 18px;
+      color: var(--muted-foreground);
+      max-width: 600px;
+      margin: 0 auto 32px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 500;
+      background: var(--secondary);
+      color: var(--secondary-foreground);
+      border: 1px solid var(--border-grid);
+    }
+
+    /* Theme Toggle */
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 100;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--foreground);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    .theme-toggle:hover { transform: scale(1.05); }
+    .theme-toggle:active { transform: scale(0.95); }
+
+    /* Sections */
+    section { padding: 48px 0; }
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+    .section-heading {
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+      text-wrap: balance;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border-grid);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    /* Color Grid */
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+    }
+    .color-swatch {
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border-grid);
+    }
+    .color-swatch-preview {
+      height: 64px;
+    }
+    .color-swatch-info {
+      padding: 10px 12px;
+      background: var(--card);
+      font-size: 13px;
+    }
+    .color-swatch-name {
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+    .color-swatch-hex {
+      font-family: 'Geist Mono', monospace;
+      color: var(--muted-foreground);
+      font-size: 12px;
+    }
+
+    /* Chart Colors */
+    .chart-colors {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .chart-color {
+      flex: 1;
+      height: 48px;
+      border-radius: 8px;
+      position: relative;
+      transition: transform 0.15s ease-out;
+    }
+    .chart-color:hover { transform: scaleY(1.15); }
+    .chart-color span {
+      position: absolute;
+      bottom: -22px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 11px;
+      font-family: 'Geist Mono', monospace;
+      color: var(--muted-foreground);
+      white-space: nowrap;
+    }
+
+    /* Tag Colors */
+    .tag-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .tag-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    /* Code Block */
+    .code-block {
+      background: var(--muted);
+      border: 1px solid var(--border-grid);
+      border-radius: 10px;
+      padding: 20px 24px;
+      font-family: 'Geist Mono', monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      overflow-x: auto;
+      white-space: pre;
+      color: var(--card-foreground);
+    }
+    .code-keyword { color: var(--primary); }
+    .code-string { color: var(--chart-3, #F59E0B); }
+    .code-comment { color: var(--muted-foreground); }
+
+    /* Install Section */
+    .install-steps {
+      display: grid;
+      gap: 16px;
+      margin-top: 24px;
+    }
+    .install-step {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .step-number {
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--primary);
+      color: var(--primary-foreground);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .step-content h4 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .step-content p {
+      font-size: 14px;
+      color: var(--muted-foreground);
+    }
+    .step-content code {
+      font-family: 'Geist Mono', monospace;
+      font-size: 13px;
+      background: var(--muted);
+      padding: 2px 8px;
+      border-radius: 4px;
+      border: 1px solid var(--border-grid);
+    }
+
+    /* Example Grid */
+    .example-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+    .example-card {
+      background: var(--card);
+      border: 1px solid var(--border-grid);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .example-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-grid);
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .example-header-icon {
+      width: 20px;
+      height: 20px;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+    .example-header-icon svg {
+      width: 20px;
+      height: 20px;
+    }
+    .example-body { padding: 20px; }
+
+    /* Mini Dashboard */
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .stat-card {
+      background: var(--muted);
+      border-radius: 8px;
+      padding: 14px;
+    }
+    .stat-label {
+      font-size: 12px;
+      color: var(--muted-foreground);
+      margin-bottom: 4px;
+    }
+    .stat-value {
+      font-family: 'Geist Mono', monospace;
+      font-size: 20px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+    .stat-change {
+      font-size: 12px;
+      font-family: 'Geist Mono', monospace;
+      margin-top: 4px;
+    }
+    .positive { color: var(--primary); }
+    .negative { color: var(--destructive); }
+
+    /* Mini Table */
+    .mini-table {
+      width: 100%;
+      font-size: 13px;
+      border-collapse: collapse;
+    }
+    .mini-table th {
+      text-align: left;
+      font-weight: 500;
+      color: var(--muted-foreground);
+      font-size: 12px;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border-grid);
+    }
+    .mini-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border-grid);
+    }
+    .mini-table tr:last-child td { border-bottom: none; }
+    .address {
+      font-family: 'Geist Mono', monospace;
+      color: var(--primary);
+      font-size: 12px;
+    }
+    .sol-value {
+      font-family: 'Geist Mono', monospace;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Prompt Examples */
+    .prompt-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .prompt-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 16px;
+      background: var(--card);
+      border: 1px solid var(--border-grid);
+      border-radius: 10px;
+    }
+    .prompt-icon {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .prompt-icon svg {
+      width: 18px;
+      height: 18px;
+    }
+    .prompt-text {
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .prompt-text strong { font-weight: 600; }
+    .prompt-text .prompt-command {
+      font-family: 'Geist Mono', monospace;
+      font-size: 13px;
+      color: var(--primary);
+    }
+
+    /* Footer */
+    .footer {
+      padding: 48px 0 32px;
+      text-align: center;
+      color: var(--muted-foreground);
+      font-size: 14px;
+      border-top: 1px solid var(--border-grid);
+    }
+    .footer a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .hero h1 { font-size: 32px; }
+      .stat-row { grid-template-columns: 1fr; }
+      .color-grid { grid-template-columns: repeat(2, 1fr); }
+      .example-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark/light mode">
+  <span class="theme-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-moon" style="display:none;"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-sun"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg></span>
+</button>
+
+<div class="container">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div style="display: flex; justify-content: center; margin-bottom: 24px;">
+      <svg width="64" height="64" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g filter="url(#filter0_i_7487_13528)">
+          <path d="M0 12.8C0 8.31958 0 6.07937 0.871948 4.36808C1.63893 2.86278 2.86278 1.63893 4.36808 0.871948C6.07937 0 8.31958 0 12.8 0H19.2C23.6804 0 25.9206 0 27.6319 0.871948C29.1372 1.63893 30.3611 2.86278 31.1281 4.36808C32 6.07937 32 8.31958 32 12.8V19.2C32 23.6804 32 25.9206 31.1281 27.6319C30.3611 29.1372 29.1372 30.3611 27.6319 31.1281C25.9206 32 23.6804 32 19.2 32H12.8C8.31958 32 6.07937 32 4.36808 31.1281C2.86278 30.3611 1.63893 29.1372 0.871948 27.6319C0 25.9206 0 23.6804 0 19.2V12.8Z" fill="#0C9790"/>
+          <path d="M27.9994 12.0595C27.9994 9.66916 25.9476 8 23.0105 8C20.6224 8 18.9764 9.16883 17.0703 10.5224C16.7514 10.7486 16.4217 10.9831 16.0818 11.2163C15.1012 11.889 14.0822 12.545 13.1525 13.1247C13.0596 13.1827 12.9439 13.1904 12.8444 13.1454C12.1047 12.8121 10.6397 12.278 8.83848 12.278C4.83918 12.278 4 14.4552 4 16.2818C4 17.7325 4.87934 18.9404 6.54212 19.7747C7.05342 20.0311 7.56233 20.2135 7.97712 20.3378C8.29961 20.4349 8.55556 20.6771 8.66405 20.9921C8.77255 21.3071 8.90082 21.6446 9.05967 21.9916C9.2353 22.3753 9.44509 22.7962 9.68186 23.2433C9.93541 23.7205 10.4371 24 10.9556 24C11.1426 24 11.3321 23.9639 11.5125 23.8875C14.1703 22.7643 18.3368 21.3651 23.095 21.0773C23.9216 21.027 24.5486 20.3467 24.5228 19.5278C24.5108 19.1447 24.491 18.7877 24.4646 18.4673C24.4449 18.2269 24.4185 17.9895 24.3909 17.7704C24.3388 17.3547 24.5054 16.942 24.8339 16.6774C25.1624 16.4127 25.5394 16.0906 25.923 15.7187C27.3011 14.3835 28 13.1525 28 12.0595H27.9994ZM11.6336 22.4285C11.5059 22.4789 11.3692 22.5079 11.2319 22.4978C10.8981 22.4729 10.5942 22.2675 10.4575 21.9489C10.385 21.7796 10.3166 21.6162 10.2453 21.4616C10.0949 21.133 9.96958 20.7961 9.87367 20.5107C9.78136 20.2354 9.90664 19.9346 10.1698 19.8067C10.7572 19.5207 11.7127 19.1737 12.637 18.9321C12.7263 18.909 12.8042 18.8516 12.8456 18.7705C13.1842 18.1097 12.6406 17.5934 12.1239 17.7355C12.0909 17.7444 11.3045 17.9599 10.4851 18.2713C9.99895 18.4561 9.60873 18.6307 9.30183 18.8048C8.85407 19.0588 8.31819 19.1121 7.83446 18.9327C6.72374 18.5206 5.30133 17.713 5.30133 16.283C5.30133 15.0183 5.70294 13.567 8.83608 13.567C9.61053 13.567 10.3172 13.6843 10.9089 13.8364C11.1936 13.9099 11.2475 14.2864 10.9946 14.4362C10.1908 14.9129 9.67287 15.206 9.65968 15.2137C9.34739 15.3901 9.23889 15.7839 9.41752 16.0924C9.59614 16.4009 9.99476 16.508 10.3071 16.3316C10.328 16.3197 11.6378 15.5778 13.3563 14.5185C13.3653 14.5132 13.3743 14.5073 13.3833 14.502C14.4448 13.8477 15.6592 13.0732 16.8221 12.2762C17.171 12.037 17.5054 11.7996 17.8285 11.5704C19.6226 10.2968 21.0396 9.29021 23.0081 9.29021C25.2127 9.29021 26.6939 10.404 26.6939 12.0619C26.6939 13.265 25.0749 14.8253 23.9539 15.7247C23.647 15.971 23.2502 16.0764 22.8576 16.0266C22.7449 16.0124 22.6316 16 22.5183 15.9893C22.2792 15.9674 22.1413 15.7105 22.257 15.502C22.8169 14.4972 23.0518 13.8785 23.065 13.8435C23.1897 13.5102 23.0183 13.1407 22.6808 13.017C22.3439 12.8926 21.9687 13.0625 21.8428 13.3953C21.8392 13.4054 21.4718 14.3634 20.5517 15.8324C20.4959 15.9212 20.4 15.9787 20.2939 15.987C20.0655 16.0047 19.8899 15.7922 19.951 15.5749C20.1117 15.0047 20.1393 14.7435 20.1429 14.7015C20.1734 14.3474 19.9085 14.0312 19.5494 14.001C19.1892 13.9714 18.8751 14.229 18.8445 14.5837C18.8445 14.5884 18.7936 15.0118 18.4333 16.0574C18.3944 16.1711 18.2955 16.2564 18.1762 16.2801C17.3364 16.4435 16.7747 16.6087 16.7154 16.6265C16.3707 16.7295 16.1759 17.0883 16.2802 17.4288C16.3839 17.7686 16.7472 17.9623 17.0924 17.8592C17.108 17.8545 17.7764 17.6591 18.748 17.4874L18.778 17.4832C18.8349 17.4785 19.1298 17.424 19.143 17.4217C20.0739 17.2778 21.2092 17.1747 22.3056 17.2642C22.7197 17.2979 23.0548 17.6111 23.1046 18.0185C23.1262 18.1973 23.1459 18.3856 23.1621 18.5751C23.1765 18.748 23.1885 18.9327 23.1987 19.1275C23.2089 19.3223 23.1543 19.7486 22.709 19.7694C22.3151 19.7877 20.5912 19.7966 17.141 20.6131C14.5084 21.236 12.1604 22.2225 11.6318 22.4315L11.6336 22.4285Z" fill="white"/>
+        </g>
+        <defs>
+          <filter id="filter0_i_7487_13528" x="0" y="-0.5" width="32" height="32.5" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+            <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+            <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+            <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+            <feOffset dy="-0.5"/>
+            <feGaussianBlur stdDeviation="0.25"/>
+            <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
+            <feColorMatrix type="matrix" values="0 0 0 0 0.0392157 0 0 0 0 0.0509804 0 0 0 0 0.0705882 0 0 0 0.1 0"/>
+            <feBlend mode="normal" in2="shape" result="effect1_innerShadow_7487_13528"/>
+          </filter>
+        </defs>
+      </svg>
+    </div>
+    <span class="badge">Claude Code Skill</span>
+    <h1 style="margin-top: 20px;">
+      <span>Marinade</span> Product Design
+    </h1>
+    <p>
+      A design system skill for Claude Code that enforces Marinade Finance's visual language, color tokens, and component conventions across every tool you build.
+    </p>
+    <span class="badge mono" style="font-size: 12px;">~/.claude/skills/marinade-product-design/</span>
+  </div>
+
+  <!-- How to Install -->
+  <section>
+    <div class="section-title">Setup</div>
+    <div class="section-heading">How to Install</div>
+    <p style="color: var(--muted-foreground); margin-bottom: 24px;">Pick one of these two methods, then start building.</p>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; margin-bottom: 24px;">
+      <!-- Option A -->
+      <div class="card" style="position: relative;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+          <span style="display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 6px; background: var(--primary); color: var(--primary-foreground); font-size: 12px; font-weight: 600;">A</span>
+          <h4 style="font-size: 15px; font-weight: 600;">Install via npm <span style="font-size: 12px; font-weight: 500; color: var(--primary); background: color-mix(in srgb, var(--primary) 12%, transparent); padding: 2px 8px; border-radius: 4px; margin-left: 4px;">recommended</span></h4>
+        </div>
+        <p style="font-size: 14px; color: var(--muted-foreground); margin-bottom: 12px;">One command to install the skill globally:</p>
+        <div class="code-block" style="margin-bottom: 10px;"><span class="code-keyword">npx</span> claude-code skill install marinade-product-design</div>
+        <p style="font-size: 13px; color: var(--muted-foreground);">Or from the Git repo directly:</p>
+        <div class="code-block" style="margin-top: 6px;"><span class="code-keyword">npx</span> claude-code skill install github:user/marinade-product-design-skill</div>
+      </div>
+
+      <!-- Option B -->
+      <div class="card" style="position: relative;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+          <span style="display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 6px; background: var(--secondary); color: var(--secondary-foreground); font-size: 12px; font-weight: 600;">B</span>
+          <h4 style="font-size: 15px; font-weight: 600;">Clone manually</h4>
+        </div>
+        <p style="font-size: 14px; color: var(--muted-foreground); margin-bottom: 12px;">Clone the repo and copy the skill folder:</p>
+        <div class="code-block" style="margin-bottom: 10px;"><span class="code-keyword">git</span> clone https://github.com/user/marinade-product-design-skill.git
+<span class="code-keyword">cp</span> -r marinade-product-design-skill/skill ~/.claude/skills/marinade-product-design</div>
+        <p style="font-size: 13px; color: var(--muted-foreground); margin-top: 10px;">The skill folder contains:</p>
+        <div class="code-block" style="margin-top: 6px;">SKILL.md      <span class="code-comment"># Design system rules + token reference</span>
+tokens.json   <span class="code-comment"># Clean token file (light + dark)</span></div>
+      </div>
+    </div>
+
+    <!-- Then: Start building -->
+    <div class="card" style="border: 1px solid var(--primary); border-opacity: 0.3;">
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+        <div style="width: 24px; height: 24px; color: var(--primary);"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="24" height="24"><polygon points="6 3 20 12 6 21 6 3"/></svg></div>
+        <h4 style="font-size: 15px; font-weight: 600;">Then start building</h4>
+      </div>
+      <p style="font-size: 14px; color: var(--muted-foreground); margin-bottom: 12px;">The skill auto-activates when Claude detects Marinade tool work. It asks 4 discovery questions before scaffolding, then generates a full project with tokens wired in.</p>
+      <div class="code-block"><span class="code-comment"># Just describe what you need:</span>
+<span class="code-string">"Build me a validator dashboard for Marinade"</span>
+
+<span class="code-comment"># The skill enforces:</span>
+<span class="code-comment"># - Token-based colors (never hardcoded hex)</span>
+<span class="code-comment"># - Dark mode default + light mode support</span>
+<span class="code-comment"># - Shadcn UI + Tailwind + Geist + Lucide icons</span>
+<span class="code-comment"># - Recharts with interactive tooltips</span>
+<span class="code-comment"># - Solana data formatting patterns</span>
+<span class="code-comment"># - Auto-fixes UI quality issues</span></div>
+    </div>
+  </section>
+
+  <!-- Color System -->
+  <section>
+    <div class="section-title">Tokens</div>
+    <div class="section-heading">Color System</div>
+    <p style="color: var(--muted-foreground); margin-bottom: 24px;">
+      Every color is a CSS variable that switches between light and dark mode. Toggle the theme to see them change.
+    </p>
+
+    <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 12px;">Core Semantic Colors</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="color-swatch-preview" style="background: var(--background);"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">background</div>
+          <div class="color-swatch-hex">--background</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-preview" style="background: var(--foreground);"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">foreground</div>
+          <div class="color-swatch-hex">--foreground</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-preview" style="background: var(--primary);"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">primary</div>
+          <div class="color-swatch-hex">--primary</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-preview" style="background: var(--secondary);"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">secondary</div>
+          <div class="color-swatch-hex">--secondary</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-preview" style="background: var(--muted);"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">muted</div>
+          <div class="color-swatch-hex">--muted</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-preview" style="background: var(--accent);"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">accent</div>
+          <div class="color-swatch-hex">--accent</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-preview" style="background: var(--card);"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">card</div>
+          <div class="color-swatch-hex">--card</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-preview" style="background: var(--popover);"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">popover</div>
+          <div class="color-swatch-hex">--popover</div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size: 16px; font-weight: 600; margin: 32px 0 12px;">State Colors</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="color-swatch-preview" style="background: var(--destructive);"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">destructive</div>
+          <div class="color-swatch-hex">--destructive</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-preview" style="background: var(--warning);"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">warning</div>
+          <div class="color-swatch-hex">--warning</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-preview" style="background: var(--info);"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">info</div>
+          <div class="color-swatch-hex">--info</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-preview" style="background: var(--muted-foreground);"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">muted-foreground</div>
+          <div class="color-swatch-hex">--muted-foreground</div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size: 16px; font-weight: 600; margin: 32px 0 12px;">Chart Palette</h3>
+    <div class="card">
+      <div class="chart-colors" style="padding-bottom: 28px;">
+        <div class="chart-color" style="background: var(--chart-1); border-radius: 8px;"><span>chart-1</span></div>
+        <div class="chart-color" style="background: var(--chart-2); border-radius: 8px;"><span>chart-2</span></div>
+        <div class="chart-color" style="background: var(--chart-3); border-radius: 8px;"><span>chart-3</span></div>
+        <div class="chart-color" style="background: var(--chart-4); border-radius: 8px;"><span>chart-4</span></div>
+        <div class="chart-color" style="background: var(--chart-5); border-radius: 8px;"><span>chart-5</span></div>
+      </div>
+    </div>
+
+    <h3 style="font-size: 16px; font-weight: 600; margin: 32px 0 12px;">Tag Colors</h3>
+    <div class="tag-row">
+      <div class="tag" style="background: color-mix(in srgb, var(--tag-1) 15%, transparent); color: var(--tag-1);">
+        <span class="tag-dot" style="background: var(--tag-1);"></span>tag-1
+      </div>
+      <div class="tag" style="background: color-mix(in srgb, var(--tag-2) 15%, transparent); color: var(--tag-2);">
+        <span class="tag-dot" style="background: var(--tag-2);"></span>tag-2
+      </div>
+      <div class="tag" style="background: color-mix(in srgb, var(--tag-3) 15%, transparent); color: var(--tag-3);">
+        <span class="tag-dot" style="background: var(--tag-3);"></span>tag-3
+      </div>
+      <div class="tag" style="background: color-mix(in srgb, var(--tag-4) 15%, transparent); color: var(--tag-4);">
+        <span class="tag-dot" style="background: var(--tag-4);"></span>tag-4
+      </div>
+    </div>
+  </section>
+
+  <!-- Chart Showcase -->
+  <section>
+    <div class="section-title">Charts</div>
+    <div class="section-heading">Data Visualization</div>
+    <p style="color: var(--muted-foreground); margin-bottom: 24px;">
+      All charts use the 5-color chart palette from tokens. Interactive tooltips, hover states, and time range selectors are built in.
+    </p>
+
+    <!-- Area Chart — full width -->
+    <div class="example-card" id="area-chart-card" style="margin-bottom: 16px;">
+      <div class="example-header">
+        <div class="example-header-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M7 11.207a.5.5 0 0 1 .146-.353l2-2a.5.5 0 0 1 .708 0l3.292 3.292a.5.5 0 0 0 .708 0l4.292-4.292a.5.5 0 0 1 .854.354V16H7Z"/></svg></div>
+        TVL Over Time (Area)
+      </div>
+      <div class="example-body" style="padding: 20px 20px 16px;">
+        <!-- Time range selector -->
+        <div style="display: flex; gap: 4px; margin-bottom: 16px;">
+          <span style="padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 500; color: var(--muted-foreground); background: transparent; cursor: pointer;">7d</span>
+          <span style="padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 500; color: var(--foreground); background: var(--secondary); cursor: pointer;">30d</span>
+          <span style="padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 500; color: var(--muted-foreground); background: transparent; cursor: pointer;">90d</span>
+          <span style="padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 500; color: var(--muted-foreground); background: transparent; cursor: pointer;">1y</span>
+        </div>
+        <!-- Chart area -->
+        <div id="area-chart-container" style="position: relative; height: 220px; cursor: crosshair;">
+          <!-- Y axis labels -->
+          <div style="position: absolute; left: 0; top: 0; bottom: 28px; width: 44px; display: flex; flex-direction: column; justify-content: space-between;">
+            <span style="font-size: 11px; font-family: 'Geist Mono', monospace; color: var(--muted-foreground);">10M</span>
+            <span style="font-size: 11px; font-family: 'Geist Mono', monospace; color: var(--muted-foreground);">7.5M</span>
+            <span style="font-size: 11px; font-family: 'Geist Mono', monospace; color: var(--muted-foreground);">5M</span>
+          </div>
+          <!-- Grid lines -->
+          <div style="position: absolute; left: 48px; right: 0; top: 0; bottom: 28px;">
+            <div style="border-top: 1px solid var(--border-grid); height: 33.3%;"></div>
+            <div style="border-top: 1px solid var(--border-grid); height: 33.3%;"></div>
+            <div style="border-top: 1px solid var(--border-grid); height: 33.4%;"></div>
+          </div>
+          <!-- SVG Area chart -->
+          <svg id="area-svg" viewBox="0 0 500 160" preserveAspectRatio="none" style="position: absolute; left: 48px; right: 0; top: 0; bottom: 28px; width: calc(100% - 48px); height: calc(100% - 28px);">
+            <defs>
+              <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="var(--chart-1)" stop-opacity="0.2"/>
+                <stop offset="100%" stop-color="var(--chart-1)" stop-opacity="0.01"/>
+              </linearGradient>
+            </defs>
+            <path d="M0,130 C40,125 70,110 110,100 C150,90 180,70 220,60 C260,50 290,65 330,48 C370,35 410,28 450,22 C475,18 490,16 500,14 L500,160 L0,160 Z" fill="url(#areaGrad)"/>
+            <path id="area-line" d="M0,130 C40,125 70,110 110,100 C150,90 180,70 220,60 C260,50 290,65 330,48 C370,35 410,28 450,22 C475,18 490,16 500,14" fill="none" stroke="var(--chart-1)" stroke-width="2" stroke-linecap="round"/>
+            <!-- Crosshair line (hidden by default) -->
+            <line id="crosshair-line" x1="0" y1="0" x2="0" y2="160" stroke="var(--border)" stroke-width="1" stroke-dasharray="4 4" style="display: none;"/>
+          </svg>
+          <!-- Hover dot (HTML element, outside SVG to avoid preserveAspectRatio distortion) -->
+          <div id="hover-dot" style="position: absolute; width: 10px; height: 10px; border-radius: 50%; background: var(--background); border: 2.5px solid var(--chart-1); pointer-events: none; display: none; transform: translate(-50%, -50%); z-index: 5;"></div>
+          <!-- X axis labels -->
+          <div style="position: absolute; left: 48px; right: 0; bottom: 0; display: flex; justify-content: space-between;">
+            <span style="font-size: 11px; font-family: 'Geist Mono', monospace; color: var(--muted-foreground);">Feb 10</span>
+            <span style="font-size: 11px; font-family: 'Geist Mono', monospace; color: var(--muted-foreground);">Feb 14</span>
+            <span style="font-size: 11px; font-family: 'Geist Mono', monospace; color: var(--muted-foreground);">Feb 18</span>
+            <span style="font-size: 11px; font-family: 'Geist Mono', monospace; color: var(--muted-foreground);">Feb 22</span>
+            <span style="font-size: 11px; font-family: 'Geist Mono', monospace; color: var(--muted-foreground);">Feb 26</span>
+            <span style="font-size: 11px; font-family: 'Geist Mono', monospace; color: var(--muted-foreground);">Mar 2</span>
+            <span style="font-size: 11px; font-family: 'Geist Mono', monospace; color: var(--muted-foreground);">Mar 6</span>
+            <span style="font-size: 11px; font-family: 'Geist Mono', monospace; color: var(--muted-foreground);">Mar 10</span>
+          </div>
+          <!-- Tooltip (hidden by default) -->
+          <div id="area-tooltip" style="position: absolute; top: 8px; left: 0; background: var(--popover); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); pointer-events: none; min-width: 130px; opacity: 0; transition: opacity 0.15s ease-out; z-index: 10;">
+            <div id="tooltip-date" style="font-size: 11px; color: var(--muted-foreground); margin-bottom: 2px;">Mar 3, 2026</div>
+            <div id="tooltip-value" style="font-size: 14px; font-weight: 600; font-family: 'Geist Mono', monospace; color: var(--popover-foreground);">8,241,092 SOL</div>
+            <div id="tooltip-change" style="font-size: 11px; font-family: 'Geist Mono', monospace; color: var(--primary); margin-top: 2px;">+2.4%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="example-grid">
+      <!-- Bar Chart -->
+      <div class="example-card">
+        <div class="example-header">
+          <div class="example-header-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M7 16h8"/><path d="M7 11h12"/><path d="M7 6h3"/></svg></div>
+          Validator Stake Distribution (Bar)
+        </div>
+        <div class="example-body" style="padding: 20px;">
+          <div style="display: flex; gap: 6px; align-items: flex-end; height: 140px; padding-bottom: 24px; position: relative;">
+            <!-- Bars -->
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: flex-end;">
+              <div style="width: 100%; height: 85%; background: var(--chart-1); border-radius: 4px 4px 0 0; transition: opacity 0.15s ease-out; cursor: pointer;" onmouseenter="this.style.opacity='0.8'" onmouseleave="this.style.opacity='1'"></div>
+              <span style="font-size: 10px; font-family: 'Geist Mono', monospace; color: var(--muted-foreground); position: absolute; bottom: 0;">M#1</span>
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: flex-end;">
+              <div style="width: 100%; height: 68%; background: var(--chart-2); border-radius: 4px 4px 0 0; transition: opacity 0.15s ease-out; cursor: pointer;" onmouseenter="this.style.opacity='0.8'" onmouseleave="this.style.opacity='1'"></div>
+              <span style="font-size: 10px; font-family: 'Geist Mono', monospace; color: var(--muted-foreground); position: absolute; bottom: 0;">Laine</span>
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: flex-end;">
+              <div style="width: 100%; height: 55%; background: var(--chart-3); border-radius: 4px 4px 0 0; transition: opacity 0.15s ease-out; cursor: pointer;" onmouseenter="this.style.opacity='0.8'" onmouseleave="this.style.opacity='1'"></div>
+              <span style="font-size: 10px; font-family: 'Geist Mono', monospace; color: var(--muted-foreground); position: absolute; bottom: 0;">Cogent</span>
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: flex-end;">
+              <div style="width: 100%; height: 42%; background: var(--chart-4); border-radius: 4px 4px 0 0; transition: opacity 0.15s ease-out; cursor: pointer;" onmouseenter="this.style.opacity='0.8'" onmouseleave="this.style.opacity='1'"></div>
+              <span style="font-size: 10px; font-family: 'Geist Mono', monospace; color: var(--muted-foreground); position: absolute; bottom: 0;">Evrstk</span>
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: flex-end;">
+              <div style="width: 100%; height: 30%; background: var(--chart-5); border-radius: 4px 4px 0 0; transition: opacity 0.15s ease-out; cursor: pointer;" onmouseenter="this.style.opacity='0.8'" onmouseleave="this.style.opacity='1'"></div>
+              <span style="font-size: 10px; font-family: 'Geist Mono', monospace; color: var(--muted-foreground); position: absolute; bottom: 0;">Other</span>
+            </div>
+          </div>
+          <!-- Legend -->
+          <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; padding-top: 12px; border-top: 1px solid var(--border-grid);">
+            <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted-foreground); cursor: pointer;"><span style="width: 8px; height: 8px; border-radius: 50%; background: var(--chart-1);"></span>124.8K</div>
+            <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted-foreground); cursor: pointer;"><span style="width: 8px; height: 8px; border-radius: 50%; background: var(--chart-2);"></span>98.4K</div>
+            <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted-foreground); cursor: pointer;"><span style="width: 8px; height: 8px; border-radius: 50%; background: var(--chart-3);"></span>76.2K</div>
+            <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted-foreground); cursor: pointer;"><span style="width: 8px; height: 8px; border-radius: 50%; background: var(--chart-4);"></span>58.1K</div>
+            <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted-foreground); cursor: pointer;"><span style="width: 8px; height: 8px; border-radius: 50%; background: var(--chart-5);"></span>41.3K</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Donut Chart -->
+      <div class="example-card">
+        <div class="example-header">
+          <div class="example-header-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12c.552 0 1.005-.449.95-.998a10 10 0 0 0-8.953-8.951c-.55-.055-.997.398-.997.95v8a1 1 0 0 0 1 1h8Z"/><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/></svg></div>
+          Stake Allocation (Donut)
+        </div>
+        <div class="example-body" style="padding: 20px; display: flex; align-items: center; gap: 24px;">
+          <!-- Donut SVG -->
+          <div style="flex-shrink: 0;">
+            <svg width="130" height="130" viewBox="0 0 130 130">
+              <circle cx="65" cy="65" r="50" fill="none" stroke="var(--border-grid)" stroke-width="20"/>
+              <!-- chart-1: 35% -->
+              <circle cx="65" cy="65" r="50" fill="none" stroke="var(--chart-1)" stroke-width="20"
+                stroke-dasharray="110 204" stroke-dashoffset="78.5"
+                style="transition: opacity 0.15s ease-out; cursor: pointer;"
+                onmouseenter="this.style.opacity='0.75'" onmouseleave="this.style.opacity='1'"/>
+              <!-- chart-2: 25% -->
+              <circle cx="65" cy="65" r="50" fill="none" stroke="var(--chart-2)" stroke-width="20"
+                stroke-dasharray="78.5 235.5" stroke-dashoffset="-31.5"
+                style="transition: opacity 0.15s ease-out; cursor: pointer;"
+                onmouseenter="this.style.opacity='0.75'" onmouseleave="this.style.opacity='1'"/>
+              <!-- chart-3: 20% -->
+              <circle cx="65" cy="65" r="50" fill="none" stroke="var(--chart-3)" stroke-width="20"
+                stroke-dasharray="63 251" stroke-dashoffset="-110"
+                style="transition: opacity 0.15s ease-out; cursor: pointer;"
+                onmouseenter="this.style.opacity='0.75'" onmouseleave="this.style.opacity='1'"/>
+              <!-- chart-4: 12% -->
+              <circle cx="65" cy="65" r="50" fill="none" stroke="var(--chart-4)" stroke-width="20"
+                stroke-dasharray="37.7 276.3" stroke-dashoffset="-173"
+                style="transition: opacity 0.15s ease-out; cursor: pointer;"
+                onmouseenter="this.style.opacity='0.75'" onmouseleave="this.style.opacity='1'"/>
+              <!-- chart-5: 8% -->
+              <circle cx="65" cy="65" r="50" fill="none" stroke="var(--chart-5)" stroke-width="20"
+                stroke-dasharray="25.1 288.9" stroke-dashoffset="-210.7"
+                style="transition: opacity 0.15s ease-out; cursor: pointer;"
+                onmouseenter="this.style.opacity='0.75'" onmouseleave="this.style.opacity='1'"/>
+              <!-- Center text -->
+              <text x="65" y="62" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="16" font-weight="600" fill="var(--foreground)">8.2M</text>
+              <text x="65" y="78" text-anchor="middle" font-family="'Geist', sans-serif" font-size="10" fill="var(--muted-foreground)">Total SOL</text>
+            </svg>
+          </div>
+          <!-- Legend -->
+          <div style="display: flex; flex-direction: column; gap: 10px; flex: 1;">
+            <div style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 8px;"><span style="width: 10px; height: 10px; border-radius: 50%; background: var(--chart-1);"></span><span style="font-size: 13px;">Native Stake</span></div>
+              <span style="font-size: 13px; font-family: 'Geist Mono', monospace; font-weight: 500;">35%</span>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 8px;"><span style="width: 10px; height: 10px; border-radius: 50%; background: var(--chart-2);"></span><span style="font-size: 13px;">mSOL</span></div>
+              <span style="font-size: 13px; font-family: 'Geist Mono', monospace; font-weight: 500;">25%</span>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 8px;"><span style="width: 10px; height: 10px; border-radius: 50%; background: var(--chart-3);"></span><span style="font-size: 13px;">Directed Stake</span></div>
+              <span style="font-size: 13px; font-family: 'Geist Mono', monospace; font-weight: 500;">20%</span>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 8px;"><span style="width: 10px; height: 10px; border-radius: 50%; background: var(--chart-4);"></span><span style="font-size: 13px;">DeFi</span></div>
+              <span style="font-size: 13px; font-family: 'Geist Mono', monospace; font-weight: 500;">12%</span>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 8px;"><span style="width: 10px; height: 10px; border-radius: 50%; background: var(--chart-5);"></span><span style="font-size: 13px;">Other</span></div>
+              <span style="font-size: 13px; font-family: 'Geist Mono', monospace; font-weight: 500;">8%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sparklines in Table -->
+      <div class="example-card">
+        <div class="example-header">
+          <div class="example-header-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 12-4-4v3H3v2h15v3z"/></svg></div>
+          Sparklines in Tables
+        </div>
+        <div class="example-body" style="padding: 0;">
+          <table class="mini-table">
+            <thead>
+              <tr>
+                <th style="padding-left: 20px;">Token</th>
+                <th>Price</th>
+                <th>24h</th>
+                <th style="padding-right: 20px;">7d Trend</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="padding-left: 20px; font-weight: 500;">mSOL</td>
+                <td class="sol-value">$187.42</td>
+                <td><span class="mono positive">+0.8%</span></td>
+                <td style="padding-right: 20px;">
+                  <svg width="60" height="24" viewBox="0 0 60 24"><path d="M0,18 C8,16 14,14 20,10 C26,6 32,12 38,8 C44,4 50,6 60,2" fill="none" stroke="var(--chart-1)" stroke-width="1.5" stroke-linecap="round"/></svg>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding-left: 20px; font-weight: 500;">MNDE</td>
+                <td class="sol-value">$0.042</td>
+                <td><span class="mono negative">-2.1%</span></td>
+                <td style="padding-right: 20px;">
+                  <svg width="60" height="24" viewBox="0 0 60 24"><path d="M0,6 C8,8 14,10 20,14 C26,18 32,12 38,16 C44,20 50,18 60,22" fill="none" stroke="var(--destructive)" stroke-width="1.5" stroke-linecap="round"/></svg>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding-left: 20px; font-weight: 500;">SOL</td>
+                <td class="sol-value">$178.30</td>
+                <td><span class="mono positive">+1.2%</span></td>
+                <td style="padding-right: 20px;">
+                  <svg width="60" height="24" viewBox="0 0 60 24"><path d="M0,16 C8,14 14,12 20,14 C26,16 32,8 38,6 C44,4 50,8 60,3" fill="none" stroke="var(--chart-1)" stroke-width="1.5" stroke-linecap="round"/></svg>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Live Examples -->
+  <section>
+    <div class="section-title">Examples</div>
+    <div class="section-heading">What It Produces</div>
+    <p style="color: var(--muted-foreground); margin-bottom: 8px;">
+      These are the types of UI Claude builds when the skill is active. All colors come from tokens, all numbers use Geist Mono with tabular-nums.
+    </p>
+
+    <div class="example-grid">
+      <!-- Dashboard Stats -->
+      <div class="example-card">
+        <div class="example-header">
+          <div class="example-header-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg></div>
+          Dashboard Stats
+        </div>
+        <div class="example-body">
+          <div class="stat-row">
+            <div class="stat-card">
+              <div class="stat-label">Total Staked</div>
+              <div class="stat-value">8.2M</div>
+              <div class="stat-change positive">+2.4%</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">mSOL Price</div>
+              <div class="stat-value mono">$187.42</div>
+              <div class="stat-change positive">+0.8%</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">APY</div>
+              <div class="stat-value mono">7.12%</div>
+              <div class="stat-change negative">-0.3%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Validator Table -->
+      <div class="example-card">
+        <div class="example-header">
+          <div class="example-header-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg></div>
+          Validator Table
+        </div>
+        <div class="example-body">
+          <table class="mini-table">
+            <thead>
+              <tr>
+                <th>Validator</th>
+                <th>Stake</th>
+                <th>Commission</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div style="font-weight: 500;">Marinade #1</div>
+                  <div class="address">J1to...8mKq</div>
+                </td>
+                <td class="sol-value">124,891.23 SOL</td>
+                <td class="mono">5.00%</td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="font-weight: 500;">Laine</div>
+                  <div class="address">Lai1...v9Pc</div>
+                </td>
+                <td class="sol-value">98,432.10 SOL</td>
+                <td class="mono">7.00%</td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="font-weight: 500;">Cogent Crypto</div>
+                  <div class="address">Cog3...xK2r</div>
+                </td>
+                <td class="sol-value">76,219.88 SOL</td>
+                <td class="mono">8.00%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Example Prompts -->
+  <section>
+    <div class="section-title">Usage</div>
+    <div class="section-heading">Example Prompts</div>
+    <p style="color: var(--muted-foreground); margin-bottom: 8px;">
+      The skill activates when you ask Claude Code to build Marinade tools. Here are prompts that trigger it.
+    </p>
+    <div class="prompt-list">
+      <div class="prompt-item">
+        <div class="prompt-icon" style="background: color-mix(in srgb, var(--primary) 15%, transparent); color: var(--primary);"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg></div>
+        <div class="prompt-text">
+          <strong>"Build a validator performance dashboard"</strong><br>
+          <span style="color: var(--muted-foreground);">Creates a Next.js app with stat cards, validator table, commission chart, and dark mode toggle. All using Marinade tokens.</span>
+        </div>
+      </div>
+      <div class="prompt-item">
+        <div class="prompt-icon" style="background: color-mix(in srgb, var(--info) 15%, transparent); color: var(--info);"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3"/></svg></div>
+        <div class="prompt-text">
+          <strong>"Add a staking rewards calculator page"</strong><br>
+          <span style="color: var(--muted-foreground);">Extends existing project with a new route, input form for SOL amount, and projected returns using Geist Mono for all numbers.</span>
+        </div>
+      </div>
+      <div class="prompt-item">
+        <div class="prompt-icon" style="background: color-mix(in srgb, var(--warning) 15%, transparent); color: var(--warning);"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></div>
+        <div class="prompt-text">
+          <strong>"Create an alert management tool for monitoring validators"</strong><br>
+          <span style="color: var(--muted-foreground);">Uses destructive/warning/info tokens for status badges, tag colors for categories, and sidebar navigation.</span>
+        </div>
+      </div>
+      <div class="prompt-item">
+        <div class="prompt-icon" style="background: color-mix(in srgb, var(--chart-4) 15%, transparent); color: var(--chart-4);"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg></div>
+        <div class="prompt-text">
+          <strong>"Style this existing React component to match Marinade's design"</strong><br>
+          <span style="color: var(--muted-foreground);">Rewires existing component to use CSS variables, replaces hardcoded colors, adds proper dark/light mode support.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- What's Inside -->
+  <section>
+    <div class="section-title">Contents</div>
+    <div class="section-heading">What's In the Skill</div>
+    <div class="card">
+      <div class="code-block"><span class="code-comment"># marinade-product-design/</span>
+
+<span class="code-keyword">SKILL.md</span>          <span class="code-comment"># Complete design system rules</span>
+                    <span class="code-comment"># - Stack: React + TS + Shadcn + Tailwind + Lucide</span>
+                    <span class="code-comment"># - 50+ semantic color tokens (light + dark)</span>
+                    <span class="code-comment"># - CSS variable implementation guide</span>
+                    <span class="code-comment"># - Tailwind config wiring</span>
+                    <span class="code-comment"># - Typography: Geist / Geist Mono / PT Serif</span>
+                    <span class="code-comment"># - Animation timing + easing rules</span>
+                    <span class="code-comment"># - Solana data formatting (addresses, SOL, USD, APY)</span>
+                    <span class="code-comment"># - Component conventions (Shadcn patterns)</span>
+                    <span class="code-comment"># - Breakpoints + container sizes</span>
+                    <span class="code-comment"># - New project scaffolding workflow</span>
+
+<span class="code-keyword">tokens.json</span>       <span class="code-comment"># Clean token file (from Figma export)</span>
+                    <span class="code-comment"># - All Figma metadata stripped</span>
+                    <span class="code-comment"># - Organized: colors, fonts, breakpoints, containers</span>
+                    <span class="code-comment"># - Light + dark hex values for every token</span>
+                    <span class="code-comment"># - Alpha variants (primary-20, destructive-20, etc.)</span>
+                    <span class="code-comment"># - Chart palette (5 colors)</span>
+                    <span class="code-comment"># - Tag palette (4 colors + alpha variants)</span>
+                    <span class="code-comment"># - Sidebar-specific tokens</span></div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>Marinade Product Design Skill for <a href="https://claude.ai/claude-code" target="_blank">Claude Code</a></p>
+    <p style="margin-top: 8px; font-size: 12px;">Copy <code style="font-family: 'Geist Mono', monospace; background: var(--muted); padding: 2px 6px; border-radius: 4px;">~/.claude/skills/marinade-product-design/</code> to share with your team.</p>
+  </div>
+
+</div>
+
+<script>
+// Area chart hover interaction
+(function() {
+  const container = document.getElementById('area-chart-container');
+  const svg = document.getElementById('area-svg');
+  const tooltip = document.getElementById('area-tooltip');
+  const crosshair = document.getElementById('crosshair-line');
+  const dot = document.getElementById('hover-dot');
+  const tooltipDate = document.getElementById('tooltip-date');
+  const tooltipValue = document.getElementById('tooltip-value');
+  const tooltipChange = document.getElementById('tooltip-change');
+
+  // Data points along the curve
+  const dataPoints = [
+    { x: 0,   y: 130, date: 'Feb 10', val: '5,102,340 SOL', chg: '+0.3%' },
+    { x: 55,  y: 125, date: 'Feb 12', val: '5,480,120 SOL', chg: '+1.1%' },
+    { x: 110, y: 100, date: 'Feb 14', val: '6,124,890 SOL', chg: '+2.8%' },
+    { x: 150, y: 90,  date: 'Feb 16', val: '6,510,440 SOL', chg: '+1.4%' },
+    { x: 180, y: 70,  date: 'Feb 18', val: '7,012,300 SOL', chg: '+3.2%' },
+    { x: 220, y: 60,  date: 'Feb 20', val: '7,340,190 SOL', chg: '+1.8%' },
+    { x: 260, y: 50,  date: 'Feb 22', val: '7,620,880 SOL', chg: '+2.1%' },
+    { x: 290, y: 65,  date: 'Feb 24', val: '7,410,550 SOL', chg: '-0.6%' },
+    { x: 330, y: 48,  date: 'Feb 26', val: '7,890,210 SOL', chg: '+1.9%' },
+    { x: 370, y: 35,  date: 'Feb 28', val: '8,021,770 SOL', chg: '+2.0%' },
+    { x: 410, y: 28,  date: 'Mar 2',  val: '8,124,450 SOL', chg: '+1.6%' },
+    { x: 450, y: 22,  date: 'Mar 4',  val: '8,241,092 SOL', chg: '+2.4%' },
+    { x: 500, y: 14,  date: 'Mar 10', val: '8,512,300 SOL', chg: '+3.1%' },
+  ];
+
+  function getClosestPoint(svgX) {
+    let closest = dataPoints[0];
+    let minDist = Infinity;
+    for (const p of dataPoints) {
+      const d = Math.abs(p.x - svgX);
+      if (d < minDist) { minDist = d; closest = p; }
+    }
+    return closest;
+  }
+
+  container.addEventListener('mousemove', function(e) {
+    const svgRect = svg.getBoundingClientRect();
+    const offsetLeft = 48; // px left padding for y-axis
+    const chartLeft = container.getBoundingClientRect().left + offsetLeft;
+    const chartWidth = svgRect.width;
+    const relX = e.clientX - chartLeft;
+    if (relX < 0 || relX > chartWidth) return;
+
+    const svgX = (relX / chartWidth) * 500;
+    const pt = getClosestPoint(svgX);
+
+    // Position crosshair in SVG coords
+    crosshair.setAttribute('x1', pt.x);
+    crosshair.setAttribute('x2', pt.x);
+    crosshair.style.display = 'block';
+    // Position dot as HTML element in pixel coords (outside SVG to avoid distortion)
+    const dotPxX = (pt.x / 500) * chartWidth + offsetLeft;
+    const chartHeight = svgRect.height;
+    const dotPxY = (pt.y / 160) * chartHeight;
+    dot.style.left = dotPxX + 'px';
+    dot.style.top = dotPxY + 'px';
+    dot.style.display = 'block';
+
+    // Tooltip content
+    tooltipDate.textContent = pt.date + ', 2026';
+    tooltipValue.textContent = pt.val;
+    tooltipChange.textContent = pt.chg;
+    tooltipChange.style.color = pt.chg.startsWith('-') ? 'var(--destructive)' : 'var(--primary)';
+
+    // Position tooltip in container px
+    const tooltipPx = (pt.x / 500) * chartWidth + offsetLeft;
+    const containerWidth = container.getBoundingClientRect().width;
+    const tooltipW = 140;
+    let left = tooltipPx - tooltipW / 2;
+    if (left < offsetLeft) left = offsetLeft;
+    if (left + tooltipW > containerWidth) left = containerWidth - tooltipW;
+    tooltip.style.left = left + 'px';
+    tooltip.style.opacity = '1';
+  });
+
+  container.addEventListener('mouseleave', function() {
+    crosshair.style.display = 'none';
+    dot.style.display = 'none';
+    tooltip.style.opacity = '0';
+  });
+})();
+
+function toggleTheme() {
+  const html = document.documentElement;
+  const moon = document.querySelector('.icon-moon');
+  const sun = document.querySelector('.icon-sun');
+  if (html.classList.contains('dark')) {
+    html.classList.remove('dark');
+    moon.style.display = 'none';
+    sun.style.display = 'block';
+  } else {
+    html.classList.add('dark');
+    moon.style.display = 'block';
+    sun.style.display = 'none';
+  }
+}
+</script>
+</body>
+</html>

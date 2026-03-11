@@ -1,0 +1,21 @@
+{
+  "name": "marinade-product-design-skill",
+  "version": "1.0.0",
+  "description": "Claude Code skill for building Marinade Finance internal tools with a strict design token system",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx serve .",
+    "build": "echo 'Static site — no build needed'"
+  },
+  "keywords": [
+    "claude-code",
+    "skill",
+    "marinade",
+    "design-system",
+    "shadcn",
+    "tailwind",
+    "solana"
+  ],
+  "author": "Marinade Finance",
+  "license": "MIT"
+}
