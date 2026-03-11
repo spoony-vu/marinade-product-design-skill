@@ -37,7 +37,7 @@ The canonical token file is `tokens.json` bundled with this skill. When scaffold
 | `secondary-foreground` | `#3A4E4D` | `#F6F9F9` | Text on secondary |
 | `tertiary` | `#DDE7E8` | `#3A4E4D` | Tertiary surfaces |
 | `tertiary-foreground` | `#6F8383` | `#9AB1B2` | Text on tertiary |
-| `muted` | `#F3F7F7` | `#182120` | Muted backgrounds |
+| `muted` | `#F3F7F7` | `#111a19` | Muted backgrounds (stat cards, subtle surfaces) |
 | `muted-foreground` | `#6C8383` | `#6C8383` | Muted text (same in both modes) |
 | `accent` | `#E7EEEF` | `#212C2B` | Accent surfaces |
 | `accent-foreground` | `#081211` | `#F0FDFA` | Text on accent |
@@ -124,7 +124,7 @@ When scaffolding, generate this in `globals.css`:
   --primary-foreground: #042F2E;
   --secondary: #212C2B;
   --secondary-foreground: #F6F9F9;
-  --muted: #182120;
+  --muted: #111a19;
   --muted-foreground: #6C8383;
   --accent: #212C2B;
   --accent-foreground: #F0FDFA;
