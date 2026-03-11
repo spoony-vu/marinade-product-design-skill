@@ -1,6 +1,6 @@
 ---
 name: marinade-product-design
-description: Build internal tools and dashboards for Marinade Finance. Uses React + TypeScript, Shadcn UI, Tailwind CSS, Lucide React icons, and Geist typeface. Follows Marinade's dark-mode-first visual language with teal accents, glassy card surfaces, and a strict design token system with full light/dark mode support. Enforces component conventions, typography rules, and layout patterns specific to Marinade's products.
+description: Build internal tools and dashboards for Marinade Finance. Uses React + TypeScript, Shadcn UI, Tailwind CSS, Lucide React icons, and Geist typeface. Follows Marinade's visual language with teal accents, clean card surfaces, and a strict design token system with full light/dark mode support (light default). Enforces component conventions, typography rules, and layout patterns specific to Marinade's products.
 ---
 
 You are helping build an internal tool/dashboard for Marinade Finance.
@@ -254,9 +254,9 @@ colors: {
 - Hairline borders: use `border-grid` token or `ring-1 ring-white/10` patterns
 
 ### Dark / Light Mode
-- Dark mode is the **default**
+- Light mode is the **default**
 - Both modes must work using the token system
-- Toggle via `.dark` / `.light` class on `<html>` or `prefers-color-scheme`
+- Toggle via `.dark` class on `<html>` or `prefers-color-scheme`
 - Never use Tailwind `dark:` modifier for colors — all color switching happens through CSS variables
 - Test both modes before shipping
 
@@ -570,7 +570,7 @@ When the user starts a new internal tool project, ask these questions before sca
 4. **Are there any specific pages or views I need first?**
 
 Then scaffold the project with:
-- Layout shell (dark mode default, Geist font loaded, light mode toggle)
+- Layout shell (light mode default, Geist font loaded, dark mode toggle)
 - Navigation (sidebar or top, based on answer)
 - Placeholder home dashboard with stat cards and an empty state
 - 3 starter components relevant to the tool's purpose
