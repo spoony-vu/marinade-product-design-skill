@@ -97,32 +97,26 @@
     .mono { font-family: 'Geist Mono', monospace; font-variant-numeric: tabular-nums; }
 
     .container { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
-    @media (min-width: 1280px) { .container { max-width: 1360px; } }
 
-    /* Page layout with sidebar nav */
+    /* Page layout */
     .page-layout { position: relative; }
 
-    @media (min-width: 1280px) {
-      .page-layout {
-        display: grid;
-        grid-template-columns: 200px 1fr;
-        gap: 48px;
-      }
-    }
-
-    /* On this page nav */
+    /* On this page nav — fixed to left corner */
     .page-nav-wrapper {
       display: none;
     }
     @media (min-width: 1280px) {
       .page-nav-wrapper {
         display: block;
+        position: fixed;
+        left: 32px;
+        top: 80px;
+        width: 180px;
+        z-index: 50;
       }
     }
     .page-nav {
-      position: sticky;
-      top: 80px;
-      padding-top: 48px;
+      padding: 0;
     }
     .page-nav-title {
       display: flex;
@@ -940,9 +934,7 @@
     <span class="badge mono" style="font-size: 12px;">~/.claude/skills/marinade-product-design/</span>
   </div>
 
-  <div class="page-layout">
-
-  <!-- On this page nav (left sidebar) -->
+  <!-- On this page nav (fixed left corner) -->
   <div class="page-nav-wrapper">
     <nav class="page-nav" id="page-nav">
       <div class="page-nav-title">
@@ -961,6 +953,7 @@
     </nav>
   </div>
 
+  <div class="page-layout">
   <div class="page-content">
 
   <!-- How to Install -->
