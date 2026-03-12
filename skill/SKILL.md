@@ -18,7 +18,7 @@ You are helping build an internal tool/dashboard for Marinade Finance.
 
 The full token definitions are embedded below as JSON. When scaffolding a project, generate CSS variables + Tailwind config from these tokens.
 
-**Every color in the system has a light and dark variant.** Dark mode is the default. Light mode must also work. Use CSS custom properties that switch based on a `.dark` / `.light` class on `<html>` or via `prefers-color-scheme`.
+**Every color in the system has a light and dark variant.** Light mode is the default. Dark mode must also work. Use CSS custom properties that switch based on a `.dark` / `.light` class on `<html>` or via `prefers-color-scheme`.
 
 #### tokens.json (embedded)
 

@@ -1132,44 +1132,45 @@
     return closest;
   }
 
+  let rafId = null;
+  const offsetLeft = 48;
   container.addEventListener('mousemove', function(e) {
-    const svgRect = svg.getBoundingClientRect();
-    const offsetLeft = 48; // px left padding for y-axis
-    const chartLeft = container.getBoundingClientRect().left + offsetLeft;
-    const chartWidth = svgRect.width;
-    const relX = e.clientX - chartLeft;
-    if (relX < 0 || relX > chartWidth) return;
+    if (rafId) return;
+    rafId = requestAnimationFrame(function() {
+      rafId = null;
+      const svgRect = svg.getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect();
+      const chartWidth = svgRect.width;
+      const chartHeight = svgRect.height;
+      const relX = e.clientX - containerRect.left - offsetLeft;
+      if (relX < 0 || relX > chartWidth) return;
 
-    const svgX = (relX / chartWidth) * 500;
-    const pt = getClosestPoint(svgX);
+      const svgX = (relX / chartWidth) * 500;
+      const pt = getClosestPoint(svgX);
 
-    // Position crosshair in SVG coords
-    crosshair.setAttribute('x1', pt.x);
-    crosshair.setAttribute('x2', pt.x);
-    crosshair.style.display = 'block';
-    // Position dot as HTML element in pixel coords (outside SVG to avoid distortion)
-    const dotPxX = (pt.x / 500) * chartWidth + offsetLeft;
-    const chartHeight = svgRect.height;
-    const dotPxY = (pt.y / 160) * chartHeight;
-    dot.style.left = dotPxX + 'px';
-    dot.style.top = dotPxY + 'px';
-    dot.style.display = 'block';
+      crosshair.setAttribute('x1', pt.x);
+      crosshair.setAttribute('x2', pt.x);
+      crosshair.style.display = 'block';
 
-    // Tooltip content
-    tooltipDate.textContent = pt.date + ', 2026';
-    tooltipValue.textContent = pt.val;
-    tooltipChange.textContent = pt.chg;
-    tooltipChange.style.color = pt.chg.startsWith('-') ? 'var(--destructive)' : 'var(--primary)';
+      const dotPxX = (pt.x / 500) * chartWidth + offsetLeft;
+      const dotPxY = (pt.y / 160) * chartHeight;
+      dot.style.left = dotPxX + 'px';
+      dot.style.top = dotPxY + 'px';
+      dot.style.display = 'block';
 
-    // Position tooltip in container px
-    const tooltipPx = (pt.x / 500) * chartWidth + offsetLeft;
-    const containerWidth = container.getBoundingClientRect().width;
-    const tooltipW = 140;
-    let left = tooltipPx - tooltipW / 2;
-    if (left < offsetLeft) left = offsetLeft;
-    if (left + tooltipW > containerWidth) left = containerWidth - tooltipW;
-    tooltip.style.left = left + 'px';
-    tooltip.style.opacity = '1';
+      tooltipDate.textContent = pt.date + ', 2026';
+      tooltipValue.textContent = pt.val;
+      tooltipChange.textContent = pt.chg;
+      tooltipChange.style.color = pt.chg.startsWith('-') ? 'var(--destructive)' : 'var(--primary)';
+
+      const tooltipPx = dotPxX;
+      const tooltipW = 140;
+      let left = tooltipPx - tooltipW / 2;
+      if (left < offsetLeft) left = offsetLeft;
+      if (left + tooltipW > containerRect.width) left = containerRect.width - tooltipW;
+      tooltip.style.left = left + 'px';
+      tooltip.style.opacity = '1';
+    });
   });
 
   container.addEventListener('mouseleave', function() {
