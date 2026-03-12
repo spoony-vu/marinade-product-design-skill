@@ -367,6 +367,186 @@ Add `transform: scale(0.97)` on `:active` for tactile feedback:
 - Disable button after submission to prevent duplicate requests
 - Colocate errors near the field that caused them
 
+### Hover States — Component Reference
+
+Every interactive element must have a defined hover state. All hover styles are guarded with `@media (hover: hover) and (pointer: fine)` to prevent sticky hover on touch devices. Transitions use `150ms ease` on explicit properties (never `transition: all`). All elements get `active: transform: scale(0.97)` for press feedback.
+
+#### Buttons
+| Variant | Default | Hover | Active |
+|---------|---------|-------|--------|
+| Primary | `bg: var(--primary)`, `color: var(--primary-foreground)` | `bg: var(--primary-90)` | `scale(0.97)` |
+| Secondary | `bg: var(--secondary)`, `color: var(--secondary-foreground)` | `bg: var(--tertiary)` | `scale(0.97)` |
+| Ghost | `bg: transparent`, `color: var(--foreground)` | `bg: var(--accent)` | `scale(0.97)` |
+| Outline | `bg: transparent`, `border: var(--input)`, `color: var(--foreground)` | `bg: var(--accent)` | `scale(0.97)` |
+| Destructive | `bg: var(--destructive)`, `color: white` | `opacity: 0.9` | `scale(0.97)` |
+| Link | `bg: transparent`, `color: var(--primary)` | `text-decoration: underline` | — |
+
+```css
+@media (hover: hover) and (pointer: fine) {
+  .btn-primary:hover { background: var(--primary-90); }
+  .btn-secondary:hover { background: var(--tertiary); }
+  .btn-ghost:hover { background: var(--accent); }
+  .btn-outline:hover { background: var(--accent); }
+  .btn-destructive:hover { opacity: 0.9; }
+  .btn-link:hover { text-decoration: underline; }
+}
+button, [role="button"] {
+  transition: background 150ms ease, opacity 150ms ease, transform 100ms ease;
+  touch-action: manipulation;
+}
+button:active, [role="button"]:active { transform: scale(0.97); }
+```
+
+#### Tabs & Segmented Controls
+| State | Style |
+|-------|-------|
+| Unselected | `bg: transparent`, `color: var(--muted-foreground)` |
+| Unselected hover | `bg: var(--accent)`, `color: var(--foreground)` |
+| Selected | `bg: var(--secondary)`, `color: var(--foreground)` |
+| Selected hover | No change (already active) |
+
+```css
+@media (hover: hover) and (pointer: fine) {
+  .tab-trigger:not([data-state="active"]):hover {
+    background: var(--accent);
+    color: var(--foreground);
+  }
+}
+.tab-trigger {
+  transition: background 150ms ease, color 150ms ease;
+}
+```
+
+**Critical**: Never use `var(--primary)` for tab selection background — tabs use neutral grey (`var(--secondary)`) to avoid competing with content. The hover uses `var(--accent)` which is one step lighter than `var(--secondary)`.
+
+#### Links
+| Context | Default | Hover |
+|---------|---------|-------|
+| Inline text | `color: var(--primary)`, no underline | `text-decoration: underline` |
+| Navigation | `color: var(--muted-foreground)` | `color: var(--foreground)` |
+| Sidebar nav | `color: var(--sidebar-foreground)` | `bg: var(--sidebar-accent)` |
+
+```css
+@media (hover: hover) and (pointer: fine) {
+  a.inline-link:hover { text-decoration: underline; }
+  a.nav-link:hover { color: var(--foreground); }
+}
+a { transition: color 150ms ease; }
+```
+
+#### Cards (clickable/interactive)
+Not all cards are interactive. Only apply hover to cards with `onClick`, `<a>` wrapper, or explicit interactive intent.
+
+| State | Style |
+|-------|-------|
+| Default | `bg: var(--card)`, `border: var(--border-grid)` |
+| Hover | `border-color: var(--border)`, `box-shadow: 0 4px 12px rgba(0,0,0,0.08)` |
+
+```css
+@media (hover: hover) and (pointer: fine) {
+  .card-interactive:hover {
+    border-color: var(--border);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+}
+.card-interactive {
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+  cursor: pointer;
+}
+```
+
+#### Table Rows
+| State | Style |
+|-------|-------|
+| Default | `bg: transparent` |
+| Hover | `bg: var(--muted)` |
+
+```css
+@media (hover: hover) and (pointer: fine) {
+  tbody tr:hover { background: var(--muted); }
+}
+tbody tr { transition: background 150ms ease; }
+```
+
+#### Sidebar Items
+| State | Style |
+|-------|-------|
+| Default | `bg: transparent`, `color: var(--sidebar-foreground)` |
+| Hover | `bg: var(--sidebar-accent)`, `color: var(--sidebar-accent-foreground)` |
+| Active | `bg: var(--sidebar-accent)`, `color: var(--sidebar-accent-foreground)`, `font-weight: 500` |
+
+#### Dropdown / Select / Menu Items
+| State | Style |
+|-------|-------|
+| Default | `bg: transparent` |
+| Hover / Focus | `bg: var(--accent)`, `color: var(--accent-foreground)` |
+
+```css
+@media (hover: hover) and (pointer: fine) {
+  [role="menuitem"]:hover,
+  [role="option"]:hover {
+    background: var(--accent);
+    color: var(--accent-foreground);
+  }
+}
+```
+
+#### Inputs & Textareas
+| State | Style |
+|-------|-------|
+| Default | `border: var(--input)` |
+| Hover | `border-color: var(--border)` (slightly more contrast) |
+| Focus | `ring: 2px var(--ring)`, `border-color: var(--primary)` |
+
+```css
+@media (hover: hover) and (pointer: fine) {
+  input:hover, textarea:hover, select:hover {
+    border-color: var(--border);
+  }
+}
+input, textarea, select {
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+input:focus-visible, textarea:focus-visible {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--ring);
+}
+```
+
+#### Icon Buttons
+| State | Style |
+|-------|-------|
+| Default | `bg: transparent` |
+| Hover | `bg: var(--accent)` |
+| Active | `scale(0.97)` |
+
+Always include `aria-label`. Expand hit area to 44px minimum with `::before` pseudo-element.
+
+#### Badges & Tags (when clickable)
+| State | Style |
+|-------|-------|
+| Default | Normal opacity |
+| Hover | `opacity: 0.8` |
+
+Only apply hover styles to badges that are links or have click handlers. Static badges have no hover state.
+
+#### Toggle / Switch
+| State | Style |
+|-------|-------|
+| Track default | Token background |
+| Track hover | `brightness(1.1)` filter |
+
+#### Universal Hover Rules
+1. **Guard everything**: `@media (hover: hover) and (pointer: fine) { ... }`
+2. **Explicit transitions**: Never `transition: all`. Specify `background`, `color`, `border-color`, `opacity`, `transform`, `box-shadow`.
+3. **Duration**: `150ms ease` for all hover transitions.
+4. **No font-weight changes**: Never change font weight on hover — causes layout shift.
+5. **No color-only indicators**: Hover state changes must include background or border shift, not just color.
+6. **Active feedback**: All clickable elements get `transform: scale(0.97)` on `:active` with `100ms ease` transition.
+7. **Focus-visible**: Use `var(--ring)` token. Outlines must be grey, black, or white — never colored.
+8. **Reduced motion**: All transitions respect `prefers-reduced-motion: reduce`.
+
 ### Visual Polish (from /frontend-design + /emil-design-engineering)
 
 #### Anti-Slop Checklist
@@ -488,6 +668,130 @@ All chart interactive elements (tooltip, crosshair, active dot) must be **hidden
 | lg | 1024px |
 | xl | 1280px |
 | 2xl | 1536px |
+
+### Mobile Responsiveness — MANDATORY
+
+Every UI must work on mobile (320px+) while maintaining the design language. Mobile is not an afterthought — it's a core requirement. Test at 375px (iPhone SE/Mini), 390px (iPhone 15), and 768px (iPad mini) viewports.
+
+#### Layout Strategy
+- **Mobile-first CSS**: Write base styles for mobile, add complexity via `min-width` breakpoints
+- **Single column default**: Cards, stats, and grids stack vertically below `md` (768px)
+- **No horizontal scroll**: Nothing should overflow the viewport. Use `overflow-x: hidden` on body as a safety net, but fix the root cause.
+- **Container padding**: `16px` on mobile, `24px` on desktop
+
+```css
+.container { padding: 0 16px; }
+@media (min-width: 768px) { .container { padding: 0 24px; } }
+```
+
+#### Grid Patterns
+| Component | Desktop | Tablet (md) | Mobile (sm) |
+|-----------|---------|-------------|-------------|
+| Stat cards | 3-4 columns | 2 columns | 1 column |
+| Data tables | Full table | Full table with horizontal scroll | Card layout or horizontal scroll |
+| Sidebar + content | Side-by-side | Collapsible sidebar | Bottom sheet or hamburger menu |
+| Charts | Full width in card | Full width | Full width, reduce Y-axis labels |
+| Form inputs | Multi-column | Multi-column | Single column, full width |
+
+```css
+.stat-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+@media (min-width: 640px) { .stat-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .stat-grid { grid-template-columns: repeat(4, 1fr); } }
+```
+
+#### Typography Scaling
+| Element | Desktop | Mobile |
+|---------|---------|--------|
+| Page title (h1) | 32-36px | 24-28px |
+| Section heading (h2) | 24px | 20px |
+| Card title (h3) | 18px | 16px |
+| Body text | 14-15px | 14px |
+| Small / labels | 12-13px | 12px |
+| Stat values | 24-32px | 20-24px |
+
+Use `clamp()` for fluid sizing on hero/display text:
+```css
+.page-title { font-size: clamp(24px, 5vw, 36px); }
+```
+
+#### Touch Targets — Mobile Critical
+- **44px minimum** on all interactive elements (buttons, links, tabs, toggles)
+- Tab bar items: 48px minimum height
+- Table row tap targets: full row is tappable, minimum 48px row height
+- Spacing between tappable items: 8px minimum to prevent mis-taps
+- `touch-action: manipulation` on all buttons and links
+
+#### Tables on Mobile
+Tables wider than viewport must adapt. Prefer these patterns in order:
+1. **Card layout**: Below `sm`, transform rows into stacked cards
+2. **Horizontal scroll**: Wrap table in `overflow-x: auto` container with `-webkit-overflow-scrolling: touch`
+3. **Column hiding**: Hide less important columns on mobile, show key data only
+
+```css
+.table-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+```
+
+#### Sidebar Navigation on Mobile
+- Below `lg` (1024px): Sidebar collapses to a hamburger menu or bottom sheet
+- Use `position: fixed` overlay with backdrop blur
+- Animate in with `transform: translateX(-100%)` → `translateX(0)` at 250ms ease-out
+- Close on backdrop tap and on route change
+- Body scroll must be locked while sidebar is open (`overflow: hidden` on body)
+
+#### Charts on Mobile
+- Full width, no side padding inside chart container
+- Reduce X-axis labels to 3-5 on mobile
+- Hide Y-axis labels on very small screens (< 375px), show only grid lines
+- Tooltip position: Above the touch point, clamped to viewport
+- Range selector pills: Smaller padding, horizontally scrollable if needed
+- Disable brush/zoom on touch — use pinch-to-zoom if needed
+
+#### Modals & Sheets on Mobile
+- Below `sm`: Modals become full-screen bottom sheets
+- Slide up animation: `transform: translateY(100%)` → `translateY(0)` at 300ms ease-out
+- Include a drag handle (40px wide, 4px tall, centered, `var(--muted-foreground)` at 30% opacity)
+- Support swipe-to-dismiss gesture
+- Max height: `85vh` on mobile, with internal scroll
+
+#### Input Forms on Mobile
+- All inputs: `font-size: 16px` minimum (prevents iOS auto-zoom)
+- Full width inputs below `sm`
+- Stack label above input (not inline/side-by-side)
+- Submit button: Full width on mobile, sticky at bottom if form scrolls
+- Use `inputmode` attribute for numeric keyboards: `inputmode="decimal"` for SOL amounts
+
+#### Images & Media
+- Use `max-width: 100%` and `height: auto` on all images
+- Lazy load images below the fold: `loading="lazy"`
+- Avatar/icon sizes: Same on mobile and desktop (don't shrink below 32px)
+
+#### Safe Areas (iOS)
+Account for notch/dynamic island and home indicator:
+```css
+body {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+```
+
+#### Mobile Auto-Fix Rules
+- Fixed/sticky elements without `bottom: env(safe-area-inset-bottom)` → Add it
+- Text truncation without `min-width: 0` on flex children → Add it
+- Horizontal overflow on mobile → Debug and fix (common: tables, code blocks, long addresses)
+- Tap targets < 44px on mobile → Increase
+- Input font-size < 16px → Increase to prevent iOS zoom
+- Missing `viewport` meta tag → Add `<meta name="viewport" content="width=device-width, initial-scale=1.0">`
+- Hover-dependent interactions on mobile → Provide tap alternative
 
 ## UI Quality Audit (Auto-Fix Mode)
 
